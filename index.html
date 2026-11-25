@@ -1,0 +1,1221 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>高春映 Chun-Ying Kao | 開南大學 資訊管理學系</title>
+
+  <!-- Google Fonts: SF-like Inter & Noto Sans TC -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ==========================================================================
+       :root Design Tokens — Apple Liquid Glass Aesthetic
+       All colors, gradients, glass layers, radii, spacing & fonts defined here
+       ========================================================================== */
+    :root {
+      /* Vivid Background Gradient Palette */
+      --bg-sky: #7DD3FC;
+      --bg-violet: #A78BFA;
+      --bg-pink: #F9A8D4;
+      --bg-base: #E0F2FE;
+
+      /* Liquid Glass Surface & Rim Tokens */
+      --glass-bg: rgba(255, 255, 255, 0.18);
+      --glass-bg-hover: rgba(255, 255, 255, 0.28);
+      --glass-bg-active: rgba(255, 255, 255, 0.34);
+      --glass-border: rgba(255, 255, 255, 0.45);
+      --glass-border-strong: rgba(255, 255, 255, 0.65);
+      --glass-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+      --glass-blur: blur(24px) saturate(180%);
+
+      /* High-Contrast Typography Colors (>= 4.5:1 WCAG AA on glass) */
+      --text-primary: #0F172A;
+      --text-secondary: #1E293B;
+      --text-muted: #334155;
+      --accent-ink: #0F172A;
+
+      /* Typography */
+      --font-sans: 'Inter', 'Noto Sans TC', -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif;
+      --font-weight-regular: 400;
+      --font-weight-medium: 500;
+      --font-weight-semibold: 600;
+      --font-weight-bold: 700;
+      --letter-spacing-label: 0.08em;
+      --letter-spacing-tight: -0.02em;
+
+      /* Border Radii */
+      --radius-card: 24px;
+      --radius-media: 20px;
+      --radius-pill: 9999px;
+
+      /* Layout & Touch Accessibility */
+      --nav-margin: 12px;
+      --tap-target-min: 44px;
+      --space-xs: 8px;
+      --space-sm: 12px;
+      --space-md: 16px;
+      --space-lg: 24px;
+      --space-xl: 32px;
+      --container-max: 760px;
+
+      /* Motion */
+      --transition-glass: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+                          background-color 0.28s ease,
+                          border-color 0.28s ease;
+    }
+
+    /* ==========================================================================
+       Base Reset & Mobile-First Viewport Guardrails (375px optimized)
+       ========================================================================== */
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      font-family: var(--font-sans);
+      font-weight: var(--font-weight-medium);
+      color: var(--text-primary);
+      background-color: var(--bg-base);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    body {
+      min-height: 100vh;
+      width: 100%;
+      max-width: 100vw;
+      overflow-x: hidden;
+      color: var(--text-primary);
+      line-height: 1.65;
+      position: relative;
+    }
+
+    /* ==========================================================================
+       Fixed Vivid Slowly Drifting Blurred Mesh Gradient Background
+       ========================================================================== */
+    .liquid-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      overflow: hidden;
+      background: linear-gradient(135deg, var(--bg-sky) 0%, var(--bg-violet) 52%, var(--bg-pink) 100%);
+      pointer-events: none;
+    }
+
+    .liquid-orb {
+      position: absolute;
+      border-radius: var(--radius-pill);
+      filter: blur(72px);
+      opacity: 0.92;
+      will-change: transform;
+    }
+
+    .liquid-orb--sky {
+      width: 78vw;
+      height: 78vw;
+      max-width: 620px;
+      max-height: 620px;
+      top: -12%;
+      left: -14%;
+      background: radial-gradient(circle, var(--bg-sky) 0%, rgba(125, 211, 252, 0.25) 72%, transparent 100%);
+      animation: driftSky 22s ease-in-out infinite alternate;
+    }
+
+    .liquid-orb--violet {
+      width: 84vw;
+      height: 84vw;
+      max-width: 680px;
+      max-height: 680px;
+      top: 26%;
+      right: -18%;
+      background: radial-gradient(circle, var(--bg-violet) 0%, rgba(167, 139, 250, 0.28) 72%, transparent 100%);
+      animation: driftViolet 26s ease-in-out infinite alternate;
+    }
+
+    .liquid-orb--pink {
+      width: 82vw;
+      height: 82vw;
+      max-width: 640px;
+      max-height: 640px;
+      bottom: -14%;
+      left: 6%;
+      background: radial-gradient(circle, var(--bg-pink) 0%, rgba(249, 168, 212, 0.3) 72%, transparent 100%);
+      animation: driftPink 24s ease-in-out infinite alternate;
+    }
+
+    @keyframes driftSky {
+      0%   { transform: translate3d(0, 0, 0) scale(1); }
+      50%  { transform: translate3d(14vw, 10vh, 0) scale(1.12); }
+      100% { transform: translate3d(6vw, 22vh, 0) scale(0.96); }
+    }
+
+    @keyframes driftViolet {
+      0%   { transform: translate3d(0, 0, 0) scale(1.04); }
+      50%  { transform: translate3d(-16vw, -8vh, 0) scale(0.94); }
+      100% { transform: translate3d(-8vw, 14vh, 0) scale(1.1); }
+    }
+
+    @keyframes driftPink {
+      0%   { transform: translate3d(0, 0, 0) scale(0.98); }
+      50%  { transform: translate3d(12vw, -14vh, 0) scale(1.14); }
+      100% { transform: translate3d(-10vw, -6vh, 0) scale(1.02); }
+    }
+
+    /* ==========================================================================
+       Core Liquid Glass Surfaces (NO hard shadows, NO opaque white)
+       ========================================================================== */
+    .glass-card {
+      background: var(--glass-bg);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--glass-highlight);
+      border-radius: var(--radius-card);
+      transition: var(--transition-glass);
+    }
+
+    .glass-pill-btn,
+    .glass-pill-tag,
+    .glass-input {
+      background: var(--glass-bg);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--glass-highlight);
+      border-radius: var(--radius-pill);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-weight: var(--font-weight-medium);
+      transition: var(--transition-glass);
+    }
+
+    .glass-pill-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: var(--tap-target-min);
+      min-width: var(--tap-target-min);
+      padding: 10px 18px;
+      font-size: 0.925rem;
+      text-decoration: none;
+      cursor: pointer;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .glass-pill-btn:hover,
+    .glass-pill-btn:focus-visible {
+      background: var(--glass-bg-hover);
+      border-color: var(--glass-border-strong);
+      transform: scale(1.03);
+      outline: none;
+    }
+
+    .glass-pill-btn:active {
+      background: var(--glass-bg-active);
+      transform: scale(0.99);
+    }
+
+    /* ==========================================================================
+       Floating Pill Navigation Bar (12px margin at top)
+       ========================================================================== */
+    .nav-wrapper {
+      position: sticky;
+      top: var(--nav-margin);
+      z-index: 50;
+      padding: 0 var(--nav-margin);
+      margin-top: var(--nav-margin);
+      width: 100%;
+    }
+
+    .glass-nav {
+      max-width: var(--container-max);
+      margin: 0 auto;
+      padding: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 4px;
+      background: var(--glass-bg);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--glass-highlight);
+      border-radius: var(--radius-pill);
+    }
+
+    .nav-brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: var(--tap-target-min);
+      padding: 0 14px;
+      border-radius: var(--radius-pill);
+      text-decoration: none;
+      color: var(--text-primary);
+      font-weight: var(--font-weight-semibold);
+      font-size: 0.95rem;
+      letter-spacing: var(--letter-spacing-tight);
+      white-space: nowrap;
+      transition: var(--transition-glass);
+    }
+
+    .nav-brand:hover {
+      background: var(--glass-bg-hover);
+      transform: scale(1.03);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .nav-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: var(--tap-target-min);
+      min-width: var(--tap-target-min);
+      padding: 0 12px;
+      border-radius: var(--radius-pill);
+      text-decoration: none;
+      color: var(--text-primary);
+      font-size: 0.85rem;
+      font-weight: var(--font-weight-medium);
+      letter-spacing: 0.02em;
+      white-space: nowrap;
+      transition: var(--transition-glass);
+    }
+
+    .nav-link:hover,
+    .nav-link:focus-visible,
+    .nav-link[aria-current="true"] {
+      background: var(--glass-bg-hover);
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--glass-highlight);
+      transform: scale(1.03);
+      outline: none;
+    }
+
+    @media (min-width: 640px) {
+      .nav-link {
+        padding: 0 16px;
+        font-size: 0.9rem;
+      }
+    }
+
+    /* ==========================================================================
+       Main Layout Container (Mobile-First 375px -> Responsive Desktop)
+       ========================================================================== */
+    .page-shell {
+      width: 100%;
+      max-width: var(--container-max);
+      margin: 0 auto;
+      padding: var(--space-md) var(--nav-margin) var(--space-xl);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+
+    @media (min-width: 640px) {
+      .page-shell {
+        padding: var(--space-lg) var(--space-md) 48px;
+        gap: var(--space-lg);
+      }
+    }
+
+    /* ==========================================================================
+       Typography & Labels
+       ========================================================================== */
+    .eyebrow-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      font-size: 0.75rem;
+      font-weight: var(--font-weight-semibold);
+      letter-spacing: var(--letter-spacing-label);
+      text-transform: uppercase;
+      color: var(--text-primary);
+    }
+
+    .section-header {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: var(--space-md);
+    }
+
+    .section-title {
+      font-size: 1.35rem;
+      font-weight: var(--font-weight-bold);
+      letter-spacing: var(--letter-spacing-tight);
+      color: var(--text-primary);
+      line-height: 1.3;
+    }
+
+    .body-text {
+      font-size: 0.96rem;
+      color: var(--text-secondary);
+      font-weight: var(--font-weight-medium);
+    }
+
+    /* ==========================================================================
+       Hero Card & Profile Portrait Frame
+       ========================================================================== */
+    .hero-card {
+      padding: var(--space-lg) var(--space-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-lg);
+    }
+
+    @media (min-width: 640px) {
+      .hero-card {
+        padding: var(--space-xl);
+        flex-direction: row;
+        align-items: center;
+      }
+    }
+
+    .portrait-column {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-sm);
+      flex-shrink: 0;
+    }
+
+    .portrait-frame {
+      position: relative;
+      width: 148px;
+      height: 148px;
+      border-radius: var(--radius-card);
+      padding: 6px;
+      background: var(--glass-bg);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--glass-border-strong);
+      box-shadow: var(--glass-highlight);
+      overflow: hidden;
+    }
+
+    @media (min-width: 640px) {
+      .portrait-frame {
+        width: 172px;
+        height: 172px;
+      }
+    }
+
+    .portrait-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 18px;
+      display: block;
+    }
+
+    .hero-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: var(--space-sm);
+      flex: 1;
+    }
+
+    @media (min-width: 640px) {
+      .hero-content {
+        align-items: flex-start;
+        text-align: left;
+      }
+    }
+
+    .hero-name {
+      font-size: 1.95rem;
+      font-weight: var(--font-weight-bold);
+      letter-spacing: var(--letter-spacing-tight);
+      color: var(--text-primary);
+      line-height: 1.2;
+    }
+
+    .hero-name-en {
+      display: block;
+      font-size: 1rem;
+      font-weight: var(--font-weight-medium);
+      letter-spacing: 0.04em;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+
+    .hero-affiliation {
+      font-size: 0.98rem;
+      font-weight: var(--font-weight-semibold);
+      color: var(--text-primary);
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-top: var(--space-xs);
+      width: 100%;
+    }
+
+    @media (min-width: 640px) {
+      .hero-actions {
+        justify-content: flex-start;
+      }
+    }
+
+    /* ==========================================================================
+       Section Cards & Nested Glass Sub-Panels
+       ========================================================================== */
+    .content-card {
+      padding: var(--space-lg) var(--space-md);
+    }
+
+    @media (min-width: 640px) {
+      .content-card {
+        padding: var(--space-xl);
+      }
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--space-sm);
+      margin-top: var(--space-md);
+    }
+
+    @media (min-width: 640px) {
+      .info-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    .sub-glass-panel {
+      padding: var(--space-md);
+      border-radius: var(--radius-card);
+      background: var(--glass-bg);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--glass-border);
+      box-shadow: var(--glass-highlight);
+      transition: var(--transition-glass);
+    }
+
+    .sub-glass-panel:hover {
+      background: var(--glass-bg-hover);
+      border-color: var(--glass-border-strong);
+    }
+
+    .sub-panel-label {
+      font-size: 0.75rem;
+      font-weight: var(--font-weight-semibold);
+      letter-spacing: var(--letter-spacing-label);
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+
+    .sub-panel-value {
+      font-size: 0.98rem;
+      font-weight: var(--font-weight-semibold);
+      color: var(--text-primary);
+    }
+
+    /* ==========================================================================
+       Skills Pill Tags
+       ========================================================================== */
+    .skill-groups {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+
+    .skill-group-title {
+      font-size: 0.8rem;
+      font-weight: var(--font-weight-semibold);
+      letter-spacing: var(--letter-spacing-label);
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .pill-cluster {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .glass-pill-tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 38px;
+      padding: 6px 14px;
+      font-size: 0.85rem;
+      letter-spacing: 0.04em;
+      color: var(--text-primary);
+    }
+
+    .glass-pill-tag:hover {
+      background: var(--glass-bg-hover);
+      transform: scale(1.03);
+    }
+
+    /* ==========================================================================
+       Projects Showcase & Expandable Glass Details
+       ========================================================================== */
+    .project-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+
+    .project-card {
+      padding: var(--space-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
+
+    .project-top {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .project-title {
+      font-size: 1.08rem;
+      font-weight: var(--font-weight-bold);
+      color: var(--text-primary);
+    }
+
+    .project-details {
+      display: none;
+      padding-top: var(--space-xs);
+      border-top: 1px solid var(--glass-border);
+      font-size: 0.92rem;
+      color: var(--text-secondary);
+    }
+
+    .project-details.is-open {
+      display: block;
+    }
+
+    .project-footer {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    /* ==========================================================================
+       Contact Form & Inputs (>= 44px tap targets, pill radius)
+       ========================================================================== */
+    .contact-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: var(--space-md);
+    }
+
+    .contact-form {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
+
+    .form-field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-label {
+      font-size: 0.8rem;
+      font-weight: var(--font-weight-semibold);
+      letter-spacing: var(--letter-spacing-label);
+      color: var(--text-primary);
+      padding-left: 12px;
+    }
+
+    .glass-input {
+      width: 100%;
+      min-height: var(--tap-target-min);
+      padding: 10px 18px;
+      font-size: 0.95rem;
+      color: var(--text-primary);
+      outline: none;
+    }
+
+    .glass-input::placeholder {
+      color: var(--text-muted);
+      opacity: 0.85;
+    }
+
+    .glass-input:focus {
+      background: var(--glass-bg-hover);
+      border-color: var(--glass-border-strong);
+    }
+
+    .glass-textarea {
+      border-radius: var(--radius-card);
+      min-height: 104px;
+      resize: vertical;
+      line-height: 1.5;
+    }
+
+    /* ==========================================================================
+       Liquid Glass Status Toast (Replaces alert)
+       ========================================================================== */
+    .glass-toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(120%);
+      z-index: 100;
+      padding: 12px 20px;
+      min-height: var(--tap-target-min);
+      max-width: calc(100vw - 24px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      font-size: 0.9rem;
+      font-weight: var(--font-weight-semibold);
+      color: var(--text-primary);
+      opacity: 0;
+      pointer-events: none;
+      transition: transform 0.32s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.28s ease;
+    }
+
+    .glass-toast.is-visible {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    /* ==========================================================================
+       Footer
+       ========================================================================== */
+    .glass-footer {
+      padding: var(--space-md);
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+
+    /* Visually hidden file input */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+  </style>
+</head>
+<body>
+  <!-- Fixed Drifting Vivid Mesh Gradient Background -->
+  <div class="liquid-backdrop" aria-hidden="true">
+    <div class="liquid-orb liquid-orb--sky"></div>
+    <div class="liquid-orb liquid-orb--violet"></div>
+    <div class="liquid-orb liquid-orb--pink"></div>
+  </div>
+
+  <!-- Floating Pill Navigation Bar (12px margin) -->
+  <header class="nav-wrapper">
+    <nav class="glass-nav" aria-label="主要導覽列">
+      <a href="#top" class="nav-brand">高春映</a>
+      <div class="nav-links">
+        <a href="#about" class="nav-link">關於</a>
+        <a href="#skills" class="nav-link">技能</a>
+        <a href="#projects" class="nav-link">專題</a>
+        <a href="#contact" class="nav-link">聯絡</a>
+      </div>
+    </nav>
+  </header>
+
+  <main id="top" class="page-shell">
+    <!-- Hero Profile Card -->
+    <section class="glass-card hero-card" aria-labelledby="hero-heading">
+      <div class="portrait-column">
+        <div class="portrait-frame">
+          <!-- Profile Portrait with Automatic Artistic SVG Fallback -->
+          <img
+            id="profileImage"
+            class="portrait-img"
+            src="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=600&q=80"
+            alt="高春映個人照片"
+          />
+        </div>
+        <input
+          type="file"
+          id="photoUploadInput"
+          class="sr-only"
+          accept="image/*"
+          aria-label="選擇個人照片檔案"
+        />
+        <button type="button" id="changePhotoBtn" class="glass-pill-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+            <circle cx="12" cy="13" r="4"></circle>
+          </svg>
+          更換照片
+        </button>
+      </div>
+
+      <div class="hero-content">
+        <span class="glass-pill-tag eyebrow-label">KAINAN UNIVERSITY · MIS JUNIOR</span>
+        <h1 id="hero-heading" class="hero-name">
+          高春映
+          <span class="hero-name-en">Chun-Ying Kao</span>
+        </h1>
+        <p class="hero-affiliation">開南大學 資訊管理學系 三年級</p>
+        <p class="body-text">
+          熱愛系統分析、網頁開發與數據應用，致力於結合資訊技術與商業管理思維，打造直覺且具溫度的數位體驗。
+        </p>
+
+        <div class="hero-actions">
+          <a href="#projects" class="glass-pill-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="3" y="3" width="7" height="7" rx="1.5"></rect>
+              <rect x="14" y="3" width="7" height="7" rx="1.5"></rect>
+              <rect x="14" y="14" width="7" height="7" rx="1.5"></rect>
+              <rect x="3" y="14" width="7" height="7" rx="1.5"></rect>
+            </svg>
+            查看專題
+          </a>
+          <a href="#contact" class="glass-pill-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+              <polyline points="22,6 12,13 2,6"></polyline>
+            </svg>
+            聯絡我
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- About & Academic Background Card -->
+    <section id="about" class="glass-card content-card" aria-labelledby="about-heading">
+      <div class="section-header">
+        <span class="glass-pill-tag eyebrow-label" style="align-self: flex-start;">ABOUT &amp; EDUCATION</span>
+        <h2 id="about-heading" class="section-title">關於我與學習歷程</h2>
+      </div>
+      <p class="body-text">
+        目前就讀於開南大學資訊管理學系三年級，專注於企業資訊系統架構、資料庫設計與前端互動介面開發。在大學期間積極參與實務專題製作，學習如何從使用者需求出發，將複雜的商業流程轉化為清晰易用的數位產品。
+      </p>
+
+      <div class="info-grid">
+        <div class="sub-glass-panel">
+          <div class="sub-panel-label">UNIVERSITY · 就讀學校</div>
+          <div class="sub-panel-value">開南大學 Kainan University</div>
+        </div>
+        <div class="sub-glass-panel">
+          <div class="sub-panel-label">DEPARTMENT · 科系年級</div>
+          <div class="sub-panel-value">資訊管理學系 三年級</div>
+        </div>
+        <div class="sub-glass-panel">
+          <div class="sub-panel-label">CORE COURSES · 核心修課</div>
+          <div class="sub-panel-value">系統分析與設計、資料庫管理系統</div>
+        </div>
+        <div class="sub-glass-panel">
+          <div class="sub-panel-label">FOCUS AREA · 專題方向</div>
+          <div class="sub-panel-value">企業資源規劃 (ERP)、Web 應用開發</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Skills & Core Competencies Card -->
+    <section id="skills" class="glass-card content-card" aria-labelledby="skills-heading">
+      <div class="section-header">
+        <span class="glass-pill-tag eyebrow-label" style="align-self: flex-start;">COMPETENCIES</span>
+        <h2 id="skills-heading" class="section-title">專業技能與工具</h2>
+      </div>
+
+      <div class="skill-groups">
+        <div>
+          <h3 class="skill-group-title">FRONTEND &amp; INTERFACE · 前端與介面設計</h3>
+          <div class="pill-cluster">
+            <span class="glass-pill-tag">HTML5 / CSS3</span>
+            <span class="glass-pill-tag">JavaScript (ES6+)</span>
+            <span class="glass-pill-tag">響應式網頁設計 (RWD)</span>
+            <span class="glass-pill-tag">UI / UX 原型規劃</span>
+          </div>
+        </div>
+
+        <div>
+          <h3 class="skill-group-title">DATA &amp; SYSTEMS · 資料庫與系統分析</h3>
+          <div class="pill-cluster">
+            <span class="glass-pill-tag">SQL 資料庫設計</span>
+            <span class="glass-pill-tag">Python 資料分析</span>
+            <span class="glass-pill-tag">系統分析與設計 (SA&amp;D)</span>
+            <span class="glass-pill-tag">UML 流程建模</span>
+          </div>
+        </div>
+
+        <div>
+          <h3 class="skill-group-title">MANAGEMENT &amp; COLLABORATION · 資訊管理與協作</h3>
+          <div class="pill-cluster">
+            <span class="glass-pill-tag">敏捷專案管理</span>
+            <span class="glass-pill-tag">ERP 企業流程導入</span>
+            <span class="glass-pill-tag">商業智慧與視覺化</span>
+            <span class="glass-pill-tag">Git 版本控制</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Featured Academic Projects Card -->
+    <section id="projects" class="glass-card content-card" aria-labelledby="projects-heading">
+      <div class="section-header">
+        <span class="glass-pill-tag eyebrow-label" style="align-self: flex-start;">PROJECTS</span>
+        <h2 id="projects-heading" class="section-title">實務專題與作品</h2>
+      </div>
+
+      <div class="project-list">
+        <!-- Project 1 -->
+        <article class="sub-glass-panel project-card">
+          <div class="project-top">
+            <h3 class="project-title">智慧校園活動報名與數據儀表板</h3>
+            <span class="glass-pill-tag eyebrow-label">WEB · DATA</span>
+          </div>
+          <p class="body-text">
+            整合校內社團與講座報名流程，提供即時出席統計與滿意度分析儀表板，協助主辦單位掌握活動成效。
+          </p>
+          <div id="proj-detail-1" class="project-details">
+            負責系統需求訪談、關聯式資料庫正規化設計，以及手機優先的報名與簽到前端介面實作，將人工統計時間縮短超過 60%。
+          </div>
+          <div class="project-footer">
+            <div class="pill-cluster">
+              <span class="glass-pill-tag">HTML / JS</span>
+              <span class="glass-pill-tag">MySQL</span>
+            </div>
+            <button
+              type="button"
+              class="glass-pill-btn toggle-project-btn"
+              data-target="proj-detail-1"
+              aria-expanded="false"
+            >
+              展開細節
+            </button>
+          </div>
+        </article>
+
+        <!-- Project 2 -->
+        <article class="sub-glass-panel project-card">
+          <div class="project-top">
+            <h3 class="project-title">雲端庫存與銷售管理系統</h3>
+            <span class="glass-pill-tag eyebrow-label">ERP · SA&amp;D</span>
+          </div>
+          <p class="body-text">
+            針對中小型零售門市設計的進銷存管理平台，具備安全庫存預警、熱銷商品排行與採購建議報表功能。
+          </p>
+          <div id="proj-detail-2" class="project-details">
+            運用 UML 繪製使用案例圖與循序圖，設計進貨、銷貨與盤點模組，確保資料一致性並降低缺貨風險。
+          </div>
+          <div class="project-footer">
+            <div class="pill-cluster">
+              <span class="glass-pill-tag">系統分析</span>
+              <span class="glass-pill-tag">SQL</span>
+              <span class="glass-pill-tag">Python</span>
+            </div>
+            <button
+              type="button"
+              class="glass-pill-btn toggle-project-btn"
+              data-target="proj-detail-2"
+              aria-expanded="false"
+            >
+              展開細節
+            </button>
+          </div>
+        </article>
+
+        <!-- Project 3 -->
+        <article class="sub-glass-panel project-card">
+          <div class="project-top">
+            <h3 class="project-title">個人化學習進度與專題協作平台</h3>
+            <span class="glass-pill-tag eyebrow-label">UI/UX · APP</span>
+          </div>
+          <p class="body-text">
+            專為大學分組報告與畢業專題打造的任務追蹤看板，支援里程碑提醒、會議紀錄整理與分工進度視覺化。
+          </p>
+          <div id="proj-detail-3" class="project-details">
+            以高可讀性玻璃擬態介面設計，強調單手手機操作與清晰資訊層級，讓組員隨時同步最新專題進度。
+          </div>
+          <div class="project-footer">
+            <div class="pill-cluster">
+              <span class="glass-pill-tag">UI/UX</span>
+              <span class="glass-pill-tag">RWD</span>
+            </div>
+            <button
+              type="button"
+              class="glass-pill-btn toggle-project-btn"
+              data-target="proj-detail-3"
+              aria-expanded="false"
+            >
+              展開細節
+            </button>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Contact Card -->
+    <section id="contact" class="glass-card content-card" aria-labelledby="contact-heading">
+      <div class="section-header">
+        <span class="glass-pill-tag eyebrow-label" style="align-self: flex-start;">GET IN TOUCH</span>
+        <h2 id="contact-heading" class="section-title">聯絡方式與交流</h2>
+      </div>
+      <p class="body-text" style="margin-bottom: 16px;">
+        歡迎針對專題合作、實習機會或資訊管理領域進行交流！您可以複製我的電子信箱，或直接透過下方表單留言。
+      </p>
+
+      <div class="contact-actions">
+        <button type="button" id="copyEmailBtn" class="glass-pill-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+          </svg>
+          複製信箱 (chunying.kao@mail.knu.edu.tw)
+        </button>
+      </div>
+
+      <form id="contactForm" class="contact-form" novalidate>
+        <div class="form-field">
+          <label for="senderName" class="form-label">您的稱呼 · NAME</label>
+          <input
+            type="text"
+            id="senderName"
+            name="senderName"
+            class="glass-input"
+            placeholder="請輸入您的姓名或單位"
+            required
+          />
+        </div>
+
+        <div class="form-field">
+          <label for="senderEmail" class="form-label">聯絡信箱 · EMAIL</label>
+          <input
+            type="email"
+            id="senderEmail"
+            name="senderEmail"
+            class="glass-input"
+            placeholder="name@example.com"
+            required
+          />
+        </div>
+
+        <div class="form-field">
+          <label for="senderMessage" class="form-label">留言內容 · MESSAGE</label>
+          <textarea
+            id="senderMessage"
+            name="senderMessage"
+            class="glass-input glass-textarea"
+            placeholder="想與高春映討論的專題、課程或合作內容..."
+            required
+          ></textarea>
+        </div>
+
+        <div style="margin-top: 4px;">
+          <button type="submit" class="glass-pill-btn" style="width: 100%;">
+            送出訊息
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Footer -->
+    <footer class="glass-card glass-footer">
+      © 2026 高春映 Chun-Ying Kao · 開南大學 資訊管理學系 三年級
+    </footer>
+  </main>
+
+  <!-- Liquid Glass Toast Feedback -->
+  <div id="glassToast" class="glass-card glass-toast" role="status" aria-live="polite"></div>
+
+  <script>
+    (function () {
+      'use strict';
+
+      const toastEl = document.getElementById('glassToast');
+      let toastTimer = null;
+
+      /**
+       * Display a non-intrusive Liquid Glass toast notification
+       * @param {string} message - Feedback text to show
+       */
+      function showToast(message) {
+        if (!toastEl) return;
+        toastEl.textContent = message;
+        toastEl.classList.add('is-visible');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => {
+          toastEl.classList.remove('is-visible');
+        }, 3200);
+      }
+
+      /**
+       * Generate an artistic inline SVG portrait data URI as offline/error fallback
+       * @returns {string} SVG data URI
+       */
+      function createFallbackPortrait() {
+        const svg = `
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 320" width="320" height="320">
+            <defs>
+              <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#7DD3FC"/>
+                <stop offset="52%" stop-color="#A78BFA"/>
+                <stop offset="100%" stop-color="#F9A8D4"/>
+              </linearGradient>
+              <linearGradient id="shirtGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#0F172A"/>
+                <stop offset="100%" stop-color="#334155"/>
+              </linearGradient>
+            </defs>
+            <rect width="320" height="320" fill="url(#bgGrad)"/>
+            <circle cx="160" cy="118" r="54" fill="#FDE6D8"/>
+            <path d="M104 116 C104 68, 216 68, 216 116 C216 94, 194 82, 160 82 C126 82, 104 94, 104 116 Z" fill="#0F172A"/>
+            <path d="M98 118 C96 154, 108 182, 118 192 L114 130 Z" fill="#0F172A"/>
+            <path d="M222 118 C224 154, 212 182, 202 192 L206 130 Z" fill="#0F172A"/>
+            <circle cx="142" cy="120" r="4.5" fill="#0F172A"/>
+            <circle cx="178" cy="120" r="4.5" fill="#0F172A"/>
+            <path d="M148 140 Q160 150 172 140" fill="none" stroke="#0F172A" stroke-width="3.5" stroke-linecap="round"/>
+            <path d="M68 320 C74 238, 114 202, 160 202 C206 202, 246 238, 252 320 Z" fill="url(#shirtGrad)"/>
+            <text x="160" y="286" text-anchor="middle" font-family="sans-serif" font-size="18" font-weight="600" fill="#FFFFFF" letter-spacing="2">高春映 · KNU MIS</text>
+          </svg>
+        `.trim();
+        return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+      }
+
+      // 1. Profile Photo Fallback & Interactive Custom Photo Upload
+      const profileImg = document.getElementById('profileImage');
+      const changePhotoBtn = document.getElementById('changePhotoBtn');
+      const photoInput = document.getElementById('photoUploadInput');
+
+      if (profileImg) {
+        profileImg.addEventListener('error', () => {
+          profileImg.src = createFallbackPortrait();
+        }, { once: true });
+      }
+
+      if (changePhotoBtn && photoInput && profileImg) {
+        changePhotoBtn.addEventListener('click', () => {
+          photoInput.click();
+        });
+
+        photoInput.addEventListener('change', (event) => {
+          const file = event.target.files && event.target.files[0];
+          if (!file) return;
+          if (!file.type.startsWith('image/')) {
+            showToast('請選擇有效的圖片檔案格式');
+            return;
+          }
+          const reader = new FileReader();
+          reader.onload = (loadEvent) => {
+            if (loadEvent.target && typeof loadEvent.target.result === 'string') {
+              profileImg.src = loadEvent.target.result;
+              showToast('已更新高春映的個人照片');
+            }
+          };
+          reader.readAsDataURL(file);
+        });
+      }
+
+      // 2. Expandable Project Details
+      const toggleButtons = document.querySelectorAll('.toggle-project-btn');
+      toggleButtons.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const targetId = btn.getAttribute('data-target');
+          const detailEl = targetId ? document.getElementById(targetId) : null;
+          if (!detailEl) return;
+
+          const isOpen = detailEl.classList.toggle('is-open');
+          btn.setAttribute('aria-expanded', String(isOpen));
+          btn.textContent = isOpen ? '收合細節' : '展開細節';
+        });
+      });
+
+      // 3. Copy Email via document.execCommand('copy')
+      const copyEmailBtn = document.getElementById('copyEmailBtn');
+      if (copyEmailBtn) {
+        copyEmailBtn.addEventListener('click', () => {
+          const email = 'chunying.kao@mail.knu.edu.tw';
+          const tempInput = document.createElement('textarea');
+          tempInput.value = email;
+          tempInput.setAttribute('readonly', '');
+          tempInput.style.position = 'fixed';
+          tempInput.style.opacity = '0';
+          document.body.appendChild(tempInput);
+          tempInput.select();
+          try {
+            document.execCommand('copy');
+            showToast('已複製信箱：' + email);
+          } catch (err) {
+            showToast('信箱：' + email);
+          }
+          document.body.removeChild(tempInput);
+        });
+      }
+
+      // 4. Contact Form Submission
+      const contactForm = document.getElementById('contactForm');
+      if (contactForm) {
+        contactForm.addEventListener('submit', (event) => {
+          event.preventDefault();
+          const name = document.getElementById('senderName').value.trim();
+          const email = document.getElementById('senderEmail').value.trim();
+          const message = document.getElementById('senderMessage').value.trim();
+
+          if (!name || !email || !message) {
+            showToast('請完整填寫稱呼、信箱與留言內容');
+            return;
+          }
+          showToast('感謝 ' + name + ' 的留言，高春映已收到您的訊息！');
+          contactForm.reset();
+        });
+      }
+
+      // 5. Active Navigation Highlight on Scroll
+      const sections = document.querySelectorAll('main section[id]');
+      const navLinks = document.querySelectorAll('.nav-link');
+
+      window.addEventListener('scroll', () => {
+        const scrollPos = window.scrollY + 140;
+        let currentId = '';
+        sections.forEach((sec) => {
+          if (scrollPos >= sec.offsetTop) {
+            currentId = sec.getAttribute('id') || '';
+          }
+        });
+        navLinks.forEach((link) => {
+          const href = link.getAttribute('href') || '';
+          link.setAttribute('aria-current', href === '#' + currentId ? 'true' : 'false');
+        });
+      }, { passive: true });
+    })();
+  </script>
+</body>
+</html>
