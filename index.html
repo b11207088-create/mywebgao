@@ -275,6 +275,15 @@
       transform: scale(1.03);
     }
 
+    .nav-avatar {
+      width: 30px;
+      height: 30px;
+      border-radius: var(--radius-pill);
+      object-fit: cover;
+      border: 1px solid var(--glass-border-strong);
+      flex-shrink: 0;
+    }
+
     .nav-links {
       display: flex;
       align-items: center;
@@ -424,6 +433,15 @@
       object-fit: cover;
       border-radius: 18px;
       display: block;
+    }
+
+    .photo-path-badge {
+      font-size: 0.75rem;
+      font-weight: var(--font-weight-semibold);
+      letter-spacing: 0.04em;
+      padding: 4px 12px;
+      min-height: 28px;
+      color: var(--text-secondary);
     }
 
     .hero-content {
@@ -747,7 +765,15 @@
   <!-- Floating Pill Navigation Bar (12px margin) -->
   <header class="nav-wrapper">
     <nav class="glass-nav" aria-label="主要導覽列">
-      <a href="#top" class="nav-brand">高春映</a>
+      <a href="#top" class="nav-brand">
+        <f
+          id="navAvatarImg"
+          class="nav-avatar"
+          src="img/profile.jpg"
+          alt="高春映大頭貼"
+        />
+        <span>高春映</span>
+      </a>
       <div class="nav-links">
         <a href="#about" class="nav-link">關於</a>
         <a href="#skills" class="nav-link">技能</a>
@@ -762,14 +788,15 @@
     <section class="glass-card hero-card" aria-labelledby="hero-heading">
       <div class="portrait-column">
         <div class="portrait-frame">
-          <!-- Profile Portrait with Automatic Artistic SVG Fallback -->
+          <!-- Profile Portrait referencing img/profile.jpg with Automatic SVG Fallback -->
           <img
             id="profileImage"
             class="portrait-img"
-            src="https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=600&q=80"
-            alt="高春映個人照片"
+            src="anhca.jpeg"
+            alt="高春映照片"
           />
         </div>
+        <span class="glass-pill-tag photo-path-badge">路徑：img/profile.jpg</span>
         <input
           type="file"
           id="photoUploadInput"
@@ -1079,6 +1106,7 @@
 
       /**
        * Generate an artistic inline SVG portrait data URI as offline/error fallback
+       * when img/profile.jpg has not been placed into the img/ folder yet
        * @returns {string} SVG data URI
        */
       function createFallbackPortrait() {
@@ -1086,38 +1114,52 @@
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 320" width="320" height="320">
             <defs>
               <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#7DD3FC"/>
-                <stop offset="52%" stop-color="#A78BFA"/>
-                <stop offset="100%" stop-color="#F9A8D4"/>
+                <stop offset="0%" stop-color="#D8D3CD"/>
+                <stop offset="55%" stop-color="#C8C2BA"/>
+                <stop offset="100%" stop-color="#B5AEA6"/>
               </linearGradient>
-              <linearGradient id="shirtGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stop-color="#0F172A"/>
-                <stop offset="100%" stop-color="#334155"/>
+              <linearGradient id="hairGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                <stop offset="0%" stop-color="#2D221E"/>
+                <stop offset="100%" stop-color="#4A372F"/>
               </linearGradient>
             </defs>
             <rect width="320" height="320" fill="url(#bgGrad)"/>
-            <circle cx="160" cy="118" r="54" fill="#FDE6D8"/>
-            <path d="M104 116 C104 68, 216 68, 216 116 C216 94, 194 82, 160 82 C126 82, 104 94, 104 116 Z" fill="#0F172A"/>
-            <path d="M98 118 C96 154, 108 182, 118 192 L114 130 Z" fill="#0F172A"/>
-            <path d="M222 118 C224 154, 212 182, 202 192 L206 130 Z" fill="#0F172A"/>
-            <circle cx="142" cy="120" r="4.5" fill="#0F172A"/>
-            <circle cx="178" cy="120" r="4.5" fill="#0F172A"/>
-            <path d="M148 140 Q160 150 172 140" fill="none" stroke="#0F172A" stroke-width="3.5" stroke-linecap="round"/>
-            <path d="M68 320 C74 238, 114 202, 160 202 C206 202, 246 238, 252 320 Z" fill="url(#shirtGrad)"/>
-            <text x="160" y="286" text-anchor="middle" font-family="sans-serif" font-size="18" font-weight="600" fill="#FFFFFF" letter-spacing="2">高春映 · KNU MIS</text>
+            <!-- Long wavy chestnut hair back -->
+            <path d="M84 128 C78 186, 86 248, 96 286 L224 286 C234 248, 242 186, 236 128 C232 72, 88 72, 84 128 Z" fill="url(#hairGrad)"/>
+            <!-- Neck & Shoulders in white knit top -->
+            <rect x="142" y="164" width="36" height="44" rx="14" fill="#F6D5C3"/>
+            <path d="M62 320 C68 242, 108 206, 160 206 C212 206, 252 242, 258 320 Z" fill="#F8FAFC"/>
+            <!-- Blue University Lanyard -->
+            <path d="M126 208 L156 292 L164 292 L194 208 L182 206 L160 272 L138 206 Z" fill="#2563EB"/>
+            <!-- Face & Features -->
+            <ellipse cx="160" cy="126" rx="46" ry="54" fill="#FCE0D0"/>
+            <!-- Soft parted bangs -->
+            <path d="M112 118 C114 74, 152 68, 160 88 C168 68, 206 74, 208 118 C202 92, 180 86, 160 96 C140 86, 118 92, 112 118 Z" fill="url(#hairGrad)"/>
+            <circle cx="143" cy="126" r="4" fill="#1E293B"/>
+            <circle cx="177" cy="126" r="4" fill="#1E293B"/>
+            <path d="M146 146 Q160 158 174 146" fill="none" stroke="#BE5A5A" stroke-width="3.5" stroke-linecap="round"/>
+            <text x="160" y="308" text-anchor="middle" font-family="sans-serif" font-size="13" font-weight="600" fill="#0F172A" letter-spacing="1">img/profile.jpg</text>
           </svg>
         `.trim();
         return 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
       }
 
-      // 1. Profile Photo Fallback & Interactive Custom Photo Upload
+      // 1. Profile Photo (img/profile.jpg) Fallback & Interactive Custom Photo Upload
       const profileImg = document.getElementById('profileImage');
+      const navAvatarImg = document.getElementById('navAvatarImg');
       const changePhotoBtn = document.getElementById('changePhotoBtn');
       const photoInput = document.getElementById('photoUploadInput');
+      const fallbackSrc = createFallbackPortrait();
 
       if (profileImg) {
         profileImg.addEventListener('error', () => {
-          profileImg.src = createFallbackPortrait();
+          profileImg.src = fallbackSrc;
+        }, { once: true });
+      }
+
+      if (navAvatarImg) {
+        navAvatarImg.addEventListener('error', () => {
+          navAvatarImg.src = fallbackSrc;
         }, { once: true });
       }
 
@@ -1137,7 +1179,10 @@
           reader.onload = (loadEvent) => {
             if (loadEvent.target && typeof loadEvent.target.result === 'string') {
               profileImg.src = loadEvent.target.result;
-              showToast('已更新高春映的個人照片');
+              if (navAvatarImg) {
+                navAvatarImg.src = loadEvent.target.result;
+              }
+              showToast('已預覽新照片（正式存放請放入 img/profile.jpg）');
             }
           };
           reader.readAsDataURL(file);
